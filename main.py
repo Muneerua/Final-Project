@@ -169,15 +169,41 @@ class MyWindow:
             self.insert_tb(result)
 
     def retrieve_patient(self):
-        hi = 0
+
+        self.tb.configure(state='normal')
+        self.tb.delete('1.0', tkk.END)
+
+        patient_id = simpledialog.askstring("Retrieve Patient",
+                                            "For Retrieval, Please enter Patient ID: ")
+
+        output = self.all_data.retrieve_patient(patient_id)
+
+        if output == f"Visit ID does not exist for Patient {patient_id}":
+            messagebox.showerror('Visit ID Error', 'Visit ID does not exist!')
+            self.insert_tb(output)
+        elif output == '':
+            pass
+        else:
+            messagebox.showinfo('Patient Retrieved', f'Patient {patient_id} has been found!')
+            self.insert_tb(output)
+
 
     def add_patient(self):
         hi = 0
 
     def remove_patient(self):
-        hi = 0
+
+        patient_id = simpledialog.askstring("Remove Patient",
+                                            "For Removal, Please enter Patient ID: ")
+        output = self.all_data.remove_patient(patient_id)
+
+        if output == "Patient ID does not exist.":
+            messagebox.showerror('Patient ID Error', 'Patient ID does not exist!')
+        else:
+            messagebox.showinfo('Patient ID Removed', output)
 
     def count_visit(self):
+
         self.tb.configure(state='normal')
         self.tb.delete('1.0', tkk.END)
 
