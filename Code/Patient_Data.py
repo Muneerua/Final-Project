@@ -130,17 +130,16 @@ class Data_Functions():
             else:
                 print(f"Visit ID does not exist for Patient {pt_id}")
 
-    def count_visits(self):
-        visit_date = input("For Patient(s) visit information, Please enter Visit Date (yyyy-mm-dd): ")
+    def count_visits(self, visit_date):
 
         visit_dates = []
-
+        output = ''
         for key1, value1 in self.data.items():
             for key2, value2 in value1.items():
                 visit_dates.append(value2['Visit_time'])
 
         if visit_date not in visit_dates:
-            print('Date not found!')
+            output += 'Date not found!'
         else:
             total_patient_count = 0
             for key1, value1 in self.data.items():
@@ -151,9 +150,9 @@ class Data_Functions():
                         ind_patient_count += 1
 
                 if ind_patient_count > 0:
-                    print(f'On {visit_date}, Patient {key1} came {ind_patient_count} time(s)')
-
-            print(f'On {visit_date}, there were a total of {total_patient_count} patients that came')
+                    output += f'On {visit_date}, Patient {key1} came {ind_patient_count} time(s)\n'
+            output += f'On {visit_date}, there were a total of {total_patient_count} patients that came.\n'
+            return output
 
 
 class Users():
@@ -228,11 +227,13 @@ if __name__ == "__main__":
 
                         print('--------------------')
                     break
-                elif user_data.find_user_role()  == 'admin':
-                    all_data.count_visits()
+                elif user_data.find_user_role() == 'admin':
+                    visit_date = input("For Patient(s) visit information, Please enter Visit Date (yyyy-mm-dd): ")
+
+                    print(all_data.count_visits(visit_date))
                     print('Program has stopped')
                     break
-                elif user_data.find_user_role()  == 'nurse' or user_data.find_user_role()  == 'clinician':
+                elif user_data.find_user_role() == 'nurse' or user_data.find_user_role() == 'clinician':
                     while True:
                         user_input = input("What do you want to do? [Add_patient, Remove_patient, Retrieve_patient, Count_visits] ")
 
@@ -246,7 +247,9 @@ if __name__ == "__main__":
                         elif user_input == "Retrieve_patient":
                             all_data.retrieve_patient()
                         elif user_input == "Count_visits":
-                            all_data.count_visits()
+                            visit_date = input("For Patient(s) visit information, Please enter Visit Date (yyyy-mm-dd): ")
+
+                            print(all_data.count_visits(visit_date))
                         else:
                             print('Invalid option. Select from [Add_patient, Remove_patient, Retrieve_patient, Count_visits] ')
 
