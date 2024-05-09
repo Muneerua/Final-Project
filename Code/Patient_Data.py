@@ -1,5 +1,7 @@
 import sys
 import random
+import tkinter as tkk
+from tkinter import messagebox, simpledialog
 
 
 def read_file(filename):
@@ -109,26 +111,29 @@ class Data_Functions():
             self.data[pt_id].update({Visit_ID: pt_data_dict})
         print(self.data)
 
-    def remove_patient(self):
-        pt_id = input("For Removal, Please Enter Patient ID: ")
+    def remove_patient(self, pt_id):
+        output = ''
         if pt_id not in self.data.keys():
-            print("Patient ID does not exist.")
+            output += "Patient ID does not exist."
         else:
             del self.data[pt_id]
-            print(f"Patient {pt_id} has been removed.")
-        print(self.data)
+            output += f"Patient {pt_id} has been removed."
+        return output
 
-    def retrieve_patient(self):
-        pt_id = input("For Retrieval, Please Enter Patient ID: ")
+    def retrieve_patient(self, pt_id):
+        output = ''
         if pt_id not in self.data.keys():
-            print("Patient ID does not exist.")
+            messagebox.showerror('Patient ID Error', 'Patient ID does not exist!')
         else:
-            Visit_ID = input("Enter the visit ID: ")
+            Visit_ID = simpledialog.askstring("Visit ID", "Enter the visit ID: ")
             pt_id_dict = self.data[pt_id]
             if Visit_ID in pt_id_dict.keys():
-                print(pt_id_dict[Visit_ID])
+                for key, value in pt_id_dict[Visit_ID].items():
+                    output += f"{key}: {value}\n"
             else:
-                print(f"Visit ID does not exist for Patient {pt_id}")
+                output += f"Visit ID does not exist for Patient {pt_id}"
+
+        return output
 
     def count_visits(self, visit_date):
 
