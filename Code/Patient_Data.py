@@ -1,6 +1,5 @@
 import sys
 import random
-import tkinter as tkk
 from tkinter import messagebox, simpledialog
 
 
@@ -157,10 +156,10 @@ class Data_Functions():
                 if ind_patient_count > 0:
                     output += f'On {visit_date}, Patient {key1} came {ind_patient_count} time(s)\n'
             output += f'On {visit_date}, there were a total of {total_patient_count} patients that came.\n'
-            return output
+        return output
 
 
-class Users():
+class Users:
     def __init__(self, data, username):
         self.data = data
         self.username = username
