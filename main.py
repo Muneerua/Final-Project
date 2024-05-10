@@ -210,7 +210,13 @@ class MyWindow:
 
         self.buttons_list.append('Add patient')
 
-        hi = 0
+        output = self.all_data.add_patient()
+
+        if output == "Patient was added!":
+            messagebox.showinfo('Patient ID Added', output)
+            self.write_back_to_csv()
+        else:
+            messagebox.showerror('Patient ID Error', 'Patient was not added!')
 
     def remove_patient(self):
 
