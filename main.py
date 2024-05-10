@@ -1,6 +1,10 @@
+import sys
 import tkinter as tkk
 from tkinter import messagebox, font, simpledialog, WORD
+
+sys.path.append(r'Code')
 from Patient_Data import *
+
 import csv
 import datetime
 import os
@@ -94,8 +98,8 @@ class MyWindow:
         password = self.password_entry.get()
 
         # Read in credential file
-        credential_file = r'../data/Project_credentials.csv'
-        self.patient_file = r'../data/Project_patient_information.csv'
+        credential_file = r'Data\Project_credentials.csv'
+        self.patient_file = r'Data\Project_patient_information.csv'
 
         credentials = read_credential_file(credential_file)
 
@@ -269,23 +273,36 @@ class MyWindow:
 
     def write_usage_stats_to_csv(self):
 
-        data_file = r'..\data\Project_usage_information.csv'
+        data_file = r'Data\Project_usage_information.csv'
 
-        file_empty = os.stat(data_file).st_size == 0
+        try:
+            file_empty = os.stat(data_file).st_size == 0
 
-        with open(data_file, 'a', newline='') as csvfile:
-            writer = csv.writer(csvfile)
+            with open(data_file, 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
 
-            # Write headers only if the file is empty
-            if file_empty:
+                # Write headers only if the file is empty
+                if file_empty:
+                    headers = ['Username', 'Role', 'Actions Performed', 'Time of Log-in']
+                    writer.writerow(headers)
+
+                if 'Failed Login' in self.buttons_list:
+                    tmp_list = [self.username_entry.get(), 'None', self.buttons_list, self.formatted_datetime]
+                else:
+                    tmp_list = [self.username_entry.get(), self.role, self.buttons_list, self.formatted_datetime]
+                writer.writerow(tmp_list)
+
+        except FileNotFoundError:
+            with open(data_file, 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
                 headers = ['Username', 'Role', 'Actions Performed', 'Time of Log-in']
                 writer.writerow(headers)
 
-            if 'Failed Login' in self.buttons_list:
-                tmp_list = [self.username_entry.get(), 'None', self.buttons_list, self.formatted_datetime]
-            else:
-                tmp_list = [self.username_entry.get(), self.role, self.buttons_list, self.formatted_datetime]
-            writer.writerow(tmp_list)
+                if 'Failed Login' in self.buttons_list:
+                    tmp_list = [self.username_entry.get(), 'None', self.buttons_list, self.formatted_datetime]
+                else:
+                    tmp_list = [self.username_entry.get(), self.role, self.buttons_list, self.formatted_datetime]
+                writer.writerow(tmp_list)
 
     def exit(self):
         self.buttons_list.append('Exit')
