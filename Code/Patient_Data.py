@@ -81,24 +81,24 @@ class Data_Functions():
         self.data = data
 
     def add_patient(self):
-        pt_id = input("Enter the Patient ID: ")
+        pt_id = simpledialog.askstring("Patient ID", "Enter the Patient ID: ")
         if pt_id not in self.data.keys():
-            Visit_ID = input("Enter the visit ID: ")
+            Visit_ID = simpledialog.askstring("Visit ID", "Enter the visit ID: ")
         else:
             Visit_ID = generate_visit_ID()
 
-        Visit_time = input("Enter the visit time (yyyy-mm-dd): ")
-        Gender = input("Enter the Gender of the patient (Male, Female or Non-Binary): ")
-        Race = input(
+        Visit_time = simpledialog.askstring("Visit Time", "Enter the visit time (yyyy-mm-dd): ")
+        Gender = simpledialog.askstring("Gender", "Enter the Gender of the patient (Male, Female or Non-Binary): ")
+        Race = simpledialog.askstring("Race",
             "Enter the Race of the patient (White, Black, Asian, Pacific islanders, Native Americans or Unknown): ")
-        Visit_department = input("Enter the department: ")
-        Age = input("Enter Patient Age: ")
-        Ethnicity = input("Enter the Patient's ethnicity (Hispanic, Non-Hispanic, Other, Unknown): ")
-        Insurance = input("Enter Patient Insurance(Medicare, Medicaid, None, Unknown): ")
-        Zip_code = input("Enter Patient Zip Code: ")
-        Chief_complaint = input("Enter Patient Complaint: ")
-        Note_ID = input("Enter Patient Note ID: ")
-        Note_type = input("Enter Patient Note Type: ")
+        Visit_department = simpledialog.askstring("Visit Department", "Enter the department: ")
+        Age = simpledialog.askstring("Age", "Enter Patient Age: ")
+        Ethnicity = simpledialog.askstring("Ethnicity", "Enter the Patient's ethnicity (Hispanic, Non-Hispanic, Other, Unknown): ")
+        Insurance = simpledialog.askstring("Insurance", "Enter Patient Insurance(Medicare, Medicaid, None, Unknown): ")
+        Zip_code = simpledialog.askstring("Zip Code", "Enter Patient Zip Code: ")
+        Chief_complaint = simpledialog.askstring("Chief Complaint", "Enter Patient Complaint: ")
+        Note_ID = simpledialog.askstring("Note ID", "Enter Patient Note ID: ")
+        Note_type = simpledialog.askstring("Note Type", "Enter Patient Note Type: ")
 
         pt_data = Patient_data(Visit_time, Gender, Race, Visit_department, Age, Ethnicity, Insurance, Zip_code,
                                Chief_complaint, Note_ID, Note_type)
@@ -108,7 +108,9 @@ class Data_Functions():
             self.data[pt_id] = {Visit_ID: pt_data_dict}
         else:
             self.data[pt_id].update({Visit_ID: pt_data_dict})
-        print(self.data)
+
+        output = 'Patient was added!'
+        return output
 
     def remove_patient(self, pt_id):
         output = ''
