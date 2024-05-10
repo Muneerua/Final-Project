@@ -1,6 +1,9 @@
 import tkinter as tkk
-from tkinter import messagebox, font, simpledialog
+from tkinter import messagebox, font, simpledialog, WORD
 from Patient_Data import *
+import csv
+import datetime
+import os
 
 
 class MyWindow:
@@ -44,6 +47,8 @@ class MyWindow:
 
         self.button_frame = tkk.Frame(self.window)
 
+        self.buttons_list = []
+
     def center_window(self):
         # Calculate the position to center the window on the screen
         screen_width = self.window.winfo_screenwidth()
@@ -82,31 +87,41 @@ class MyWindow:
 
     def login(self):
 
+        current_datetime = datetime.datetime.now()
+        self.formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
         username = self.username_entry.get()
         password = self.password_entry.get()
 
         # Read in credential file
         credential_file = r'../data/Project_credentials.csv'
-        patient_file = r'../data/Project_patient_information.csv'
+        self.patient_file = r'../data/Project_patient_information.csv'
 
         credentials = read_credential_file(credential_file)
 
         if username in credentials.keys() and credentials[username]['password'] == password:
 
-            existing_data = read_file(patient_file)
+            self.buttons_list.append('Successful Login')
+
+            existing_data = read_file(self.patient_file)
             self.all_data = Data_Functions(existing_data)
 
-            self.role = credentials[username]["role"].title()
+            user = Users(credentials, username)
+
+            self.role = user.find_user_role().title()
+
             self.login_frame.pack_forget()
             self.role_label.config(text=f'Role: {self.role}')
             self.role_frame.pack(pady=10)
 
-            self.tb = tkk.Text(self.window, height=10, width=62)
+            self.tb = tkk.Text(self.window, height=10, width=62, wrap=WORD)
             self.tb.pack()
             self.tb.configure(state='disabled')
 
             self.generate_buttons(credentials[username]["role"])
         else:
+            self.buttons_list.append('Failed Login')
+            self.write_usage_stats_to_csv()
             messagebox.showerror('Login Error', 'Invalid username or password. Please try again.')
 
     def temporal_trend(self):
@@ -155,6 +170,8 @@ class MyWindow:
 
     def generate_key_statistics(self):
 
+        self.buttons_list.append('Generate key statistics')
+
         self.tb.configure(state='normal')
         self.tb.delete('1.0', tkk.END)
 
@@ -169,6 +186,8 @@ class MyWindow:
             self.insert_tb(result)
 
     def retrieve_patient(self):
+
+        self.buttons_list.append('Retrieve patient')
 
         self.tb.configure(state='normal')
         self.tb.delete('1.0', tkk.END)
@@ -187,11 +206,15 @@ class MyWindow:
             messagebox.showinfo('Patient Retrieved', f'Patient {patient_id} has been found!')
             self.insert_tb(output)
 
-
     def add_patient(self):
+
+        self.buttons_list.append('Add patient')
+
         hi = 0
 
     def remove_patient(self):
+
+        self.buttons_list.append('Remove patient')
 
         patient_id = simpledialog.askstring("Remove Patient",
                                             "For Removal, Please enter Patient ID: ")
@@ -201,8 +224,11 @@ class MyWindow:
             messagebox.showerror('Patient ID Error', 'Patient ID does not exist!')
         else:
             messagebox.showinfo('Patient ID Removed', output)
+            self.write_back_to_csv()
 
     def count_visit(self):
+
+        self.buttons_list.append('Count visits')
 
         self.tb.configure(state='normal')
         self.tb.delete('1.0', tkk.END)
@@ -216,7 +242,48 @@ class MyWindow:
     def run(self):
         self.window.mainloop()
 
+    def write_back_to_csv(self):
+
+        with open(self.patient_file, 'w', newline='') as csvfile:
+            headers = ['', 'Patient_ID', 'Visit_ID', 'Visit_time', 'Visit_department', 'Race', 'Gender',
+                       'Ethnicity', 'Age', 'Zip_code', 'Insurance', 'Chief_complaint', 'Note_ID', 'Note_type']
+
+            writer = csv.writer(csvfile)
+            writer.writerow(headers)
+
+            count = 0
+            for pt_id in self.all_data.data:
+                for key in self.all_data.data[pt_id]:
+                    tmp_list = []
+                    for key1, value1 in self.all_data.data[pt_id][key].items():
+                        tmp_list.append(value1)
+                    row_to_write = [str(count), pt_id, key] + tmp_list
+                    writer.writerow(row_to_write)
+                    count += 1
+
+    def write_usage_stats_to_csv(self):
+
+        data_file = r'..\data\Project_usage_information.csv'
+
+        file_empty = os.stat(data_file).st_size == 0
+
+        with open(data_file, 'a', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+
+            # Write headers only if the file is empty
+            if file_empty:
+                headers = ['Username', 'Role', 'Actions Performed', 'Time of Log-in']
+                writer.writerow(headers)
+
+            if 'Failed Login' in self.buttons_list:
+                tmp_list = [self.username_entry.get(), 'None', self.buttons_list, self.formatted_datetime]
+            else:
+                tmp_list = [self.username_entry.get(), self.role, self.buttons_list, self.formatted_datetime]
+            writer.writerow(tmp_list)
+
     def exit(self):
+        self.buttons_list.append('Exit')
+        self.write_usage_stats_to_csv()
         self.window.quit()
 
 
