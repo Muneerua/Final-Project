@@ -23,6 +23,10 @@ This is a Python GUI application for managing patient data in a hospital setting
 
 ![Usage](images/Capture5.PNG)
 
+## Packages Required
+
+1. Tkinter - a standard Python interface to the Tk GUI toolkit shipped with Python, the fastest and easiest way to create GUI applications.
+
 
 
 
