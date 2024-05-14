@@ -9,9 +9,19 @@ This is a Python GUI application for managing patient data in a hospital setting
 
 ## Usage
 
-Upon launching the application, you will be prompted to log in with your username and password.
+1. Upon launching the application, you will be prompted to log in with your username and password.
 
 ![Usage](images/Capture.PNG)
+
+2. Depending on your role (admin, management, clinician or nurse), you will have access to different features:
+
+    a. Admin and management roles can generate key statistics such as temporal trends and patient visit counts.
+
+![Usage](images/Capture3.PNG)
+
+    b. Clinician and nurse roles can; retrieve, add and remove patient data. As well as view how many times the patient has visited the hospital.
+
+![Usage](images/Capture5.PNG)
 
 
 
