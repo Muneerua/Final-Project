@@ -3,7 +3,9 @@ import tkinter as tkk
 from tkinter import messagebox, font, simpledialog, WORD
 
 sys.path.append(r'Code')
-from Patient_Data import *
+import Patient_Data as pdd
+import data_class
+import user_class
 
 import csv
 import datetime
@@ -101,16 +103,16 @@ class MyWindow:
         credential_file = r'Data\Project_credentials.csv'
         self.patient_file = r'Data\Project_patient_information.csv'
 
-        credentials = read_credential_file(credential_file)
+        credentials = pdd.read_credential_file(credential_file)
 
         if username in credentials.keys() and credentials[username]['password'] == password:
 
             self.buttons_list.append('Successful Login')
 
-            existing_data = read_file(self.patient_file)
-            self.all_data = Data_Functions(existing_data)
+            existing_data = pdd.read_file(self.patient_file)
+            self.all_data = data_class.Data_Functions(existing_data)
 
-            user = Users(credentials, username)
+            user = user_class.Users(credentials, username)
 
             self.role = user.find_user_role().title()
 
